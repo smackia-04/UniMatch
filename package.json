@@ -1,16 +1,21 @@
 {
-  "name": "mytinder",
+  "name": "UniMatch",
   "version": "1.0.0",
   "description": "Tinder for Devs",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/app.js",
-    "devStart" : "nodemon src/app.js"
+    "devStart": "nodemon src/app.js"
   },
   "author": "Ansh Bhargava",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.2"
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+    "validator": "^13.12.0"
   }
 }
