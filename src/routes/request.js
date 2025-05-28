@@ -43,7 +43,15 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
             ]
         });
         if (existingConnectionRequest) {
-            throw new Error("Request is pending!");
+            if(existingConnectionRequest.status.includes("accepted"))
+            {
+                throw new Error(`You are already a connection with ${toUser.firstName} `);
+            }
+            else if(existingConnectionRequest.status.includes("rejected"))
+            {
+                throw new Error(`You are already rejected by ${toUser.firstName}`);
+            }
+            else throw new Error("Request is pending!");
         };
 
         const connectionRequest = new ConnectionRequest({
@@ -54,7 +62,7 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
         const data = await connectionRequest.save();
         (status == "interested") ?
             res.status(200).json({
-                message: `${req.user.firstName} is ${status} in ${toUser.firstName}.`,
+                message: `${req.user.firstName +" "+req.user.lastName} is ${status} in ${toUser.firstName +" "+toUser.lastName}.`,
                 data,
             }) :
             res.status(200).json({
@@ -65,6 +73,48 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-})
+});
+
+router.post(
+    "/request/review/:status/:requestId",
+    userAuth,
+    async (req, res) => {
+        try {
+            const loggedInUser = req.user; // check if the loggedInUser must be the toUser
+            if(!loggedInUser)
+            {
+                throw new Error("Unauthorised. Please login again.");
+            }
+            const { status, requestId } = req.params;
+
+            //check if the requestStatus must be "interested";
+            //check it the status must includes either "accepted" or "rejected"
+            const allowedStatus = ["accepted", "rejected"];
+            if (!allowedStatus.includes(status)) {
+                throw new Error(`Invalid status type: ${status}`);
+            };
+
+            const connectionRequest = await ConnectionRequest.findOne({
+                _id: requestId,
+                toUserId: loggedInUser._id,
+                status: "interested",
+            });
+            if(!connectionRequest)
+            {
+                throw new Error("Connection request does not exist!");
+            };
+
+            connectionRequest.status = status;
+            const data = await connectionRequest.save();
+
+            res.status(200).json({ message: "Connection request " + status, data});
+
+        } catch (err) {
+            res.status(400).json({
+                error: err.message,
+            })
+        }
+    }
+);
 
 module.exports = router;

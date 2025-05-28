@@ -42,7 +42,7 @@ router.post("/login", async (req, res) => {
         const isPasswordValid = await user.validatePassword(password);
         if (isPasswordValid) {
             const token = await user.getJWT();
-            res.cookie("token", token, {expires: new Date(Date.now() + 24*3600000)});
+            res.cookie("token", token, {expires: new Date(Date.now() + 7*24*3600000)});
             res.status(200).send("You are succesfully logged in.");
         }
         else {

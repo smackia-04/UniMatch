@@ -4,6 +4,21 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
+    userName: {
+        type: String,
+        required: true,
+        unique: true,
+        trim: true,
+        minLength: [3, "Username too small"],
+        maxLength: [30, "Username too large"],
+        validate: {
+          validator: function (value) {
+            return /^[a-zA-Z0-9_]+$/.test(value);
+          },
+          message:
+            "Username can only contain alphabets, numbers, and underscores.",
+        },
+      },
     firstName: {
         type: String,
         required : true,
@@ -46,6 +61,7 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         required: true,
         trim: true,
+        index: true,
         minLength: [3, "Email too small"],
         maxLength: [30, "Email too large"],
         validate(value) {
@@ -97,11 +113,10 @@ const userSchema = new mongoose.Schema({
 },
 );
 
-userSchema.index({emailId: 1});
 
 userSchema.methods.getJWT = async function() {
     const user = this;
-    const token = await jwt.sign({ _id: user._id }, "Uni@Match$2025", {expiresIn: "1d"});
+    const token = await jwt.sign({ _id: user._id }, "Uni@Match$2025", {expiresIn: "7d"});
 
     return token;
 }

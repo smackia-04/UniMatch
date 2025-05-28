@@ -71,6 +71,36 @@ router.patch("/profile/changePassword", userAuth, async (req, res) => {
     } catch (err) {
         res.status(400).json({ error: err.message });
     }
-})
+});
+
+app.get("/api/v1/users/:userId", async(req, res) => {
+    try {
+        //Getting the userId from the request params
+        const userId = req.params.userId;
+
+        //Test case 1:-
+
+        if(!userId){
+            throw new Error("Please enter userId");
+        }
+
+        const string = new RegExp(/^[a-z0-9]+$/i);
+        const isValidUserId = string.test(userId);
+
+
+        const user = await User.findOne({username: userId});
+        if(!user)
+        {
+            throw new Error("No user found with this username.")
+        }
+        res.status(200).json({
+            message: user,
+        })
+    } catch(err) {
+        res.status(400).json({
+            error: err.message,
+        });
+    };
+});
 
 module.exports = router;

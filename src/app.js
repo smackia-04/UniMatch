@@ -12,12 +12,12 @@ app.use(cookieParser());
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile");
 const connectionRequestRouter = require("./routes/request");
-const userConnections = require("./routes/userConnections");
+const userConnectionsRouter = require("./routes/user");
 
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", connectionRequestRouter);
-app.use("/", userConnections);
+app.use("/", userConnectionsRouter);
 
 
 app.get("/user", async (req, res) => {

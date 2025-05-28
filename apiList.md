@@ -37,10 +37,13 @@ POST            /request/send/:status/:toUserId
 
 GET	            /requests/send	                        View all sent connection requests.
 GET	            /requests/received	                    View all received connection requests.
+
 POST	        /request/review/accepted/:requestId	    Accept a connection request.
 POST	        /request/review/rejected/:requestId	    Reject a connection request.
 POST	        /request/review/retrieve/:requestId	    Retrieve a sent connection request.
 
+NOTE: you can merge these three APIs by making the status{accepted, rejected, retrieve} dynamic.
+POST            /request/review/:status/:requestId
 
 - User Connections APIs (userConnections)
 - Manage user connections and view suggestions.
